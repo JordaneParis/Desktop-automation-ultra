@@ -218,6 +218,112 @@ sessions_spawn({
 
 ---
 
+## 📊 Data Integration
+
+### extract_screen_data
+Extract structured text data from the screen (or a specific region) using Tesseract OCR. Returns bounding boxes, text, and confidence scores.
+
+```javascript
+sessions_spawn({
+  task: 'extract_screen_data',
+  params: {
+    region: {x: 0, y: 0, width: 800, height: 600},  // optional
+    output_format: 'json'  // default
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "data": [
+    {"text": "Total", "left": 100, "top": 200, "width": 50, "height": 15, "conf": 98.5},
+    {"text": "$123.45", "left": 200, "top": 200, "width": 60, "height": 15, "conf": 99.1}
+  ],
+  "count": 2
+}
+```
+
+### excel_read
+Read an Excel file (.xlsx) and return rows as an array of objects (keys = column headers).
+
+```javascript
+sessions_spawn({
+  task: 'excel_read',
+  params: {
+    filepath: "C:/data/input.xlsx",
+    sheet_name: 0,      // or "Sheet1"
+    range: "A1:C10"     // optional; reads whole sheet if omitted
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "data": [
+    {"Name": "Alice", "Age": 30},
+    {"Name": "Bob", "Age": 25}
+  ],
+  "columns": ["Name", "Age"],
+  "rows": 2
+}
+```
+
+### excel_write
+Write an array of objects (or array of arrays) to an Excel file.
+
+```javascript
+sessions_spawn({
+  task: 'excel_write',
+  params: {
+    filepath: "C:/data/output.xlsx",
+    data: [
+      {"Product": "Widget", "Price": 9.99},
+      {"Product": "Gadget", "Price": 19.99}
+    ],
+    sheet_name: "Results",
+    start_cell: "A1"
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{"status":"ok","filepath":"C:/data/output.xlsx","rows":2,"columns":2}
+```
+
+### data_to_csv
+Convert a list of dictionaries to CSV format. Returns CSV string or writes to a file.
+
+```javascript
+sessions_spawn({
+  task: 'data_to_csv',
+  params: {
+    data: [{"a":1,"b":2},{"a":3,"b":4}],
+    filepath: "C:/data/out.csv"  // optional; if omitted, CSV string is returned
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response** (without filepath):
+```json
+{
+  "status": "ok",
+  "csv": "a,b\n1,2\n3,4\n",
+  "rows": 2,
+  "columns": 2
+}
+```
+
+---
+
 ## Safety & Best Practices
 
 ⚠️ **This skill controls mouse and keyboard. Use with extreme caution.**

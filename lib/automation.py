@@ -66,6 +66,15 @@ except ImportError:
     PANDAS_AVAILABLE = False
     logger.warning("pandas not available — DataFrame/CSV functions disabled")
 
+# Import advanced automation module (if present)
+try:
+    from . import advanced_automation as adv
+    ADV_AVAILABLE = True
+except ImportError:
+    adv = None
+    ADV_AVAILABLE = False
+    logger.debug("advanced_automation.py not available — advanced features disabled")
+
 # ============ Basic actions ============
 
 def click(x, y, button='left'):
@@ -563,18 +572,25 @@ def main():
     _setup_logging()
     parser = argparse.ArgumentParser(description="Desktop Automation Library")
     parser.add_argument("action", choices=[
+        # Basic
         "click", "type", "screenshot", "get_active_window", "list_windows",
         "activate_window", "move_mouse", "press_key", "scroll", "find_image",
         "copy_to_clipboard", "paste_from_clipboard", "drag",
         "wait_for_image", "find_text_on_screen",
         "record_macro", "play_macro",
-        "monitor_screen",  # conditional monitoring
-        "set_safe_mode",   # safety control
-        # Data extraction & Excel
-        "extract_screen_data",
-        "excel_read",
-        "excel_write",
-        "data_to_csv"
+        # Advanced monitoring
+        "monitor_screen", "set_safe_mode",
+        # Data
+        "extract_screen_data", "excel_read", "excel_write", "data_to_csv",
+        # New advanced features
+        "find_image_multiscale",
+        "find_all_text_on_screen",
+        "detect_ui_elements",
+        "monitor_screen_with_logic",
+        "play_macro_with_subroutines",
+        "create_protected_macro",
+        "load_and_decrypt_protected_macro",
+        "generate_macro_report"
     ])
     parser.add_argument("json_args", nargs="?", help="JSON-encoded parameters")
     args = parser.parse_args()
@@ -599,7 +615,12 @@ def main():
             print(json.dumps({"status": "error", "message": "Safety module not available"}))
         sys.exit(0)
 
-    if func_name not in globals():
+    # Chercher la fonction dans les globals ou dans le module advanced_automation
+    if func_name in globals():
+        func = globals()[func_name]
+    elif ADV_AVAILABLE and hasattr(adv, func_name):
+        func = getattr(adv, func_name)
+    else:
         print(json.dumps({"status": "error", "message": f"Unknown action: {func_name}"}))
         sys.exit(1)
 
@@ -620,7 +641,7 @@ def main():
         sys.exit(0)
 
     try:
-        result = globals()[func_name](**params)
+        result = func(**params)
         print(json.dumps(result))
     except Exception as e:
         logger.exception(f"Error executing action {func_name}")

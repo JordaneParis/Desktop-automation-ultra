@@ -69,6 +69,50 @@ openclaw gateway restart
 
 ---
 
+## 📋 **Dependencies Explained**
+
+The skill requires several Python packages. Here's what each one does:
+
+### Core (Required)
+- **pyautogui** (0.9.54) — Main library for mouse/keyboard control, screenshots
+- **pygetwindow** (0.0.9) — Window enumeration and activation
+- **Pillow** (10.4.0) — Image processing (used by pyautogui)
+- **pynput** (1.7.6) — Keyboard/mouse listeners for macro recording
+
+### Optional — Image & OCR
+- **opencv-python** (4.10.0.84) — Required for `find_image` and `wait_for_image` (image recognition)
+- **pytesseract** (0.3.10) — Required for `find_text_on_screen` and `extract_screen_data` (OCR). Also requires the Tesseract binary installed on your OS.
+
+### Optional — Clipboard
+- **pyperclip** (1.9.0) — Required for `copy_to_clipboard` and `paste_from_clipboard`. Usually works out of the box on Windows/macOS; on Linux you may need `xclip` or `xsel` system packages.
+
+### Optional — Data Integration (Excel/CSV)
+- **openpyxl** (3.1.5) — Required for `excel_read` and `excel_write` (Excel .xlsx support)
+- **pandas** (2.2.3) — Required for `data_to_csv` (CSV conversion). Depends on `openpyxl` for Excel operations as well.
+
+### Installing only what you need
+If you don't need all features, you can install selectively:
+```bash
+# Minimal (basic actions only)
+pip install pyautogui pygetwindow Pillow pynput
+
+# + Image recognition
+pip install opencv-python
+
+# + OCR
+pip install pytesseract
+
+# + Clipboard
+pip install pyperclip
+
+# + Excel/CSV
+pip install openpyxl pandas
+```
+
+**Note**: The skill will gracefully degrade if optional dependencies are missing; actions requiring them will return an error with a clear message.
+
+---
+
 ## 🚀 **Available Actions**
 
 ### Basic

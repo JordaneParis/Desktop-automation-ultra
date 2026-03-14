@@ -30,6 +30,46 @@ The **macro recorder** captures **ALL** keyboard events, including passwords, cr
 - Pip
 
 ### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Dependencies Explained
+The skill uses several Python packages. Here's a quick summary:
+
+| Package | Purpose | Actions that need it |
+|----------|---------|---------------------|
+| pyautogui | mouse/keyboard control, screenshots | all basic actions |
+| pygetwindow | window management | activate_window, list_windows, get_active_window |
+| Pillow | image processing | used by pyautogui |
+| pynput | macro recording (listeners) | record_macro |
+| opencv-python | image recognition | find_image, wait_for_image |
+| pytesseract | OCR (text from images) | find_text_on_screen, extract_screen_data |
+| pyperclip | clipboard access | copy_to_clipboard, paste_from_clipboard |
+| openpyxl | Excel read/write | excel_read, excel_write |
+| pandas | CSV/DataFrame conversion | data_to_csv (and used by excel functions) |
+
+**Optional packages**: If a package is missing, related actions will return an error. You can install selectively:
+```bash
+# Minimal
+pip install pyautogui pygetwindow Pillow pynput
+# + Image recognition
+pip install opencv-python
+# + OCR
+pip install pytesseract
+# + Clipboard
+pip install pyperclip
+# + Excel/CSV
+pip install openpyxl pandas
+```
+
+For full details, see `DEPENDENCIES.md` in this skill folder.
+
+---
+
+### Enable skill
+Place the folder `desktop-automation-100per100-local` in your OpenClaw skills directory:
 ```bash
 pip install -r requirements.txt
 ```
